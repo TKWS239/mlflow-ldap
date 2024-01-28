@@ -24,7 +24,7 @@ authorization_function = mlflow.ldap:ldap_auth
 
 ### Server Startup Instructions
 
-Step 0: Git clone and copy the file to your own repo.
+Step 0: Git clone and replace the files to your repo.
 
 Step 1: install MLFlow
 
