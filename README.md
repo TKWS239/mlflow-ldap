@@ -24,20 +24,25 @@ authorization_function = mlflow.ldap:ldap_auth
 
 ### Server Startup Instructions
 
-Step 0: Git clone and replace the files to your repo.
+Step 0: Git clone and replace the files to your local directory.
 
 Step 1: install MLFlow
 
-Install the customized MLFlow from the Git repository:
+Install the offical MLFlow (2.10.0 as example):
 
 ```bash
-pip install git+https://github.com/user/repo.git#egg=mlflow
+pip install mlflow==2.10.0
+pip install ldap3
 ```
 
 Step 2: Set Environment Variables
 Configure the environment variables for LDAP and logging:
 
 ```bash
+# Replace the file to the source code
+mv /server/__init__.py  /usr/local/lib/python3.10/site-packages/mlflow/server/__init__.py && \
+mv /utils/logging_utils.py /usr/local/lib/python3.10/site-packages/mlflow/utils/logging_utils.py && \
+mv /mlflow/ldap_auth.py /usr/local/lib/python3.10/site-packages/mlflow/ldap_auth.py
 export MLFLOW_AUTH_CONFIG_PATH=$BASE_DIR/basic_auth.ini
 export ldap_host=your_ldap_server_address
 export domain=your_ad_domain
