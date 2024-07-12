@@ -54,7 +54,7 @@ export ldap_host=your_ldap_server_address
 export domain=your_ad_domain
 ```
 
-Replace your_ldap_server_address, your_ad_domain, and your_log_file_name with your actual LDAP server address, Active Directory domain, and desired log file name.
+Replace your_ldap_server_address, your_ad_domain, and your_log_file_name with your actual LDAP server address, Active Directory domain.
 
 Step 3: Start MLFlow Server
 
