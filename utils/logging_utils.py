@@ -1,10 +1,14 @@
+import contextlib
 import logging
 import logging.config
+import re
 import sys
 
-LOGGING_LINE_FORMAT = "%(message)s"
+# Logging format example:
+# 2018/11/20 12:36:37 INFO mlflow.sagemaker: Creating new SageMaker endpoint
+LOGGING_LINE_FORMAT = "%(asctime)s %(levelname)s %(name)s: %(message)s"
 LOGGING_DATETIME_FORMAT = "%Y/%m/%d %H:%M:%S"
-
+LOGGING_FILE_DIRECTORY = "/usr/local/etc/audit_log.log"
 
 class MlflowLoggingStream:
     """
@@ -69,7 +73,7 @@ def _configure_mlflow_loggers(root_module_name):
                 "mlflow_handler": {
                     "formatter": "mlflow_formatter",
                     "class": "logging.FileHandler",
-                    "filename": "/usr/local/etc/audit_log.log",
+                    "filename": f"{LOGGING_FILE_DIRECTORY}",
                 },
             },
             "loggers": {
@@ -84,4 +88,32 @@ def _configure_mlflow_loggers(root_module_name):
 
 
 def eprint(*args, **kwargs):
-    print(*args, file=MLFLOW_LOGGING_STREAM, **kwargs)  # pylint: disable=print-function
+    print(*args, file=MLFLOW_LOGGING_STREAM, **kwargs)
+
+
+class LoggerMessageFilter(logging.Filter):
+    def __init__(self, module: str, filter_regex: re.Pattern):
+        super().__init__()
+        self._pattern = filter_regex
+        self._module = module
+
+    def filter(self, record):
+        if record.name == self._module and self._pattern.search(record.msg):
+            return False
+        return True
+
+
+@contextlib.contextmanager
+def suppress_logs(module: str, filter_regex: re.Pattern):
+    """
+    Context manager that suppresses log messages from the specified module that match the specified
+    regular expression. This is useful for suppressing expected log messages from third-party
+    libraries that are not relevant to the current test.
+    """
+    logger = logging.getLogger(module)
+    filter = LoggerMessageFilter(module=module, filter_regex=filter_regex)
+    logger.addFilter(filter)
+    try:
+        yield
+    finally:
+        logger.removeFilter(filter)
