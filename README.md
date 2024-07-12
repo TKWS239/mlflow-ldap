@@ -11,15 +11,21 @@ This file configures the basic authentication for MLFlow. The settings include:
 - Admin credentials
 - LDAP authentication function
 
+### Requirement:
+
+- Python>=3.10
+- MLflow>=2.14.2
+
+
 ### basic_auth.ini example:
 
 ```ini
 [mlflow]
-default_permission = NO_PERMISSION
+default_permission = READ
 database_uri = sqlite:///basic_auth.db
 admin_username = admin
 admin_password = password
-authorization_function = mlflow.ldap:ldap_auth
+authorization_function = mlflow.ldap:authenticate_request
 ```
 
 ### Server Startup Instructions
@@ -28,10 +34,10 @@ Step 0: Git clone and replace the files to your local directory.
 
 Step 1: install MLFlow
 
-Install the offical MLFlow (2.10.0 as example):
+Install the offical MLFlow (2.14.2 as example):
 
 ```bash
-pip install mlflow==2.10.0
+pip install mlflow==2.14.2
 pip install ldap3
 ```
 
@@ -46,7 +52,6 @@ mv /mlflow/ldap_auth.py /usr/local/lib/python3.10/site-packages/mlflow/ldap_auth
 export MLFLOW_AUTH_CONFIG_PATH=$BASE_DIR/basic_auth.ini
 export ldap_host=your_ldap_server_address
 export domain=your_ad_domain
-export log_file=your_log_file_name   # Example: /usr/local/etc/audit.log
 ```
 
 Replace your_ldap_server_address, your_ad_domain, and your_log_file_name with your actual LDAP server address, Active Directory domain, and desired log file name.
