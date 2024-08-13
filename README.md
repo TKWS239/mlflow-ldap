@@ -50,11 +50,14 @@ mv /server/__init__.py  /usr/local/lib/python3.10/site-packages/mlflow/server/__
 mv /utils/logging_utils.py /usr/local/lib/python3.10/site-packages/mlflow/utils/logging_utils.py && \
 mv /mlflow/ldap_auth.py /usr/local/lib/python3.10/site-packages/mlflow/ldap_auth.py
 export MLFLOW_AUTH_CONFIG_PATH=$BASE_DIR/basic_auth.ini
-export ldap_host=your_ldap_server_address
-export domain=your_ad_domain
+export LDAP_SERVER=your_ldap_server_address
+export LDAP_DOMAIN=your_ad_domain
+export USER_AD_GROUP=your_normal_user_role_adgroup
+export ADMIN_AD_GROUP=your_admin_user_role_adgroup
+export BASE_DN=your_ad_dn
 ```
 
-Replace your_ldap_server_address, your_ad_domain, and your_log_file_name with your actual LDAP server address, Active Directory domain.
+Replace the variable appliable with your ad server
 
 Step 3: Start MLFlow Server
 
